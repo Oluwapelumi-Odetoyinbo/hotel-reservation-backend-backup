@@ -44,29 +44,29 @@ export const loginUser = async (loginData: IAuthLogin, isAdminLogin = false): Pr
     };
 };
 export const changePassword = async (
-  userId: string,
-  passwordData: IAuthChangePassword,
-): Promise<void> => {
-  const { oldPassword, newPassword } = passwordData;
-
-  // Get user with password
-  const user = await UserModel.findById(userId).select('+password');
-  if (!user) {
-    logger.error(`User with id ${userId} not found`);
-    throw new Error('User not found');
-  }
-
-  // Verify old password
-  const isMatch = await user.comparePassword(oldPassword);
-  if (!isMatch) {
-    logger.error(`Invalid old password for user ${user.email}`);
-    throw new Error('Old password is incorrect');
-  }
-
-  // Hash new password and save
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(newPassword, salt);
-  await user.save();
-
-  logger.info(`Password changed successfully for user ${user.email}`);
-};
+    userId: string,
+    passwordData: IAuthChangePassword,
+  ): Promise<void> => {
+    const { oldPassword, newPassword } = passwordData;
+  
+    // Get user with password
+    const user = await UserModel.findById(userId).select('+password');
+    if (!user) {
+      logger.error(`User with id ${userId} not found`);
+      throw new Error('User not found');
+    }
+  
+    // Verify old password
+    const isMatch = await user.comparePassword(oldPassword);
+    if (!isMatch) {
+      logger.error(`Invalid old password for user ${user.email}`);
+      throw new Error('Old password is incorrect');
+    }
+  
+    // Set new password (no need to hash here)
+    user.password = newPassword;
+    await user.save(); // Mongoose pre('save') will hash it
+  
+    logger.info(`Password changed successfully for user ${user.email}`);
+  };
+  
