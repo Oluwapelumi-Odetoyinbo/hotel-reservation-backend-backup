@@ -27,3 +27,14 @@ export const verifyToken = (token: string): IAuthTokenPayload | null => {
     return null;
   }
 };
+
+export const generateResetToken = (userId: string): string => {
+    return jwt.sign({userId}, process.env.JWT_RESET_SECRET as string, {
+        expiresIn: '1h'
+    });
+}
+
+export const verifyResetToken = (token: string): string => {
+    const decoded = jwt.verify(token, process.env.JWT_RESET_SECRET as string) as { userId: string };
+    return decoded.userId;
+}

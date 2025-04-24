@@ -6,6 +6,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import authRoutes from './routes/auth.route';
+import passwordRoutes from './routes/password.route';
 import customerRoutes from './routes/customer.route';
 import { errorHandler, notFound } from './middlewares/error.middleware';
 import logger from './utils/logger';
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
+app.use('/api/auth', passwordRoutes);
 
 app.use(notFound);
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
