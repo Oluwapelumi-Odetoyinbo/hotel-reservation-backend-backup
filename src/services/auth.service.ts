@@ -25,7 +25,7 @@ export const loginUser = async (
 
   if (!user) {
     logger.error(`User not found or inactive: ${email}`);
-    throw new Error('Invalid credentials');
+    throw new Error('User not found or inactive');
   }
 
   // Add password hash to logs

@@ -61,7 +61,7 @@ export const customerLogin = async (
         successResponse(res, { user, token }, 'Customer login successful');
     } catch (error) {
         logger.error(`Customer login error: ${error}`);
-        errorResponse(res, 'Invalid credentials', 401);
+        errorResponse(res, 'user not found or inactive', 401);
     }
 };
   
