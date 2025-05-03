@@ -7,6 +7,7 @@ const router = Router();
 // Public routes
 router.post('/admin-login', adminLogin);
 router.post('/customer-login', customerLogin);
+router.get('/customer-login', customerLogin);
 
 // Protected routes
 router.patch('/change-password', authenticate, changeUserPassword);

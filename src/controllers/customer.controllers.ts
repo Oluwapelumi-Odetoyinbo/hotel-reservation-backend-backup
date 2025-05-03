@@ -4,6 +4,8 @@ import { successResponse, errorResponse } from '../utils/response';
 import { validate } from '../middlewares/validation.middleware';
 import { body, validationResult } from 'express-validator';
 import  logger  from '../utils/logger';
+import { getCustomers } from '../services/customer.service'; // make sure this exists
+
 
 export const createCustomerHandler = async (
     req: Request,
@@ -37,3 +39,17 @@ export const createCustomerHandler = async (
     }
   };
   
+  export const getCustomersHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const customers = await getCustomers();
+      successResponse(res, customers, 'Customers fetched successfully');
+    } catch (error) {
+      logger.error(`Fetch customers error: ${error}`);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      errorResponse(res, errorMessage, 500);
+    }
+  };
