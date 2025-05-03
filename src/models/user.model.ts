@@ -32,6 +32,10 @@ const userSchema: Schema = new Schema(
       type: Boolean,
       default: true,
     },
+    isDefaultPassword: {
+      type: Boolean,
+      default: true,
+    }
   },
   {
     timestamps: true,

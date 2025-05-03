@@ -25,6 +25,7 @@ export const createCustomer = async (customerData: ICustomerInput): Promise<IUse
     password: DEFAULT_PASSWORD,
     role,
     status,
+    isDefaultPassword: true,
   });
 
   // Send email with credentials if requested

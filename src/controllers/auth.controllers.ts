@@ -49,7 +49,8 @@ export const customerLogin = async (
 
         const { email, password } = req.body;
         logger.info(`Customer login attempt: ${email}`);
-        const { user, token } = await loginUser({ email, password });
+        const { user, token, isDefaultPassword } = await loginUser({ email, password });
+
 
         // Check if user is customer
         if (user.role !== 'customer') {
@@ -58,7 +59,7 @@ export const customerLogin = async (
             return;
         }
 
-        successResponse(res, { user, token }, 'Customer login successful');
+        successResponse(res, { user, token, isDefaultPassword }, 'Login successful');
     } catch (error) {
         logger.error(`Customer login error: ${error}`);
         errorResponse(res, 'Invalid credentials', 401);
