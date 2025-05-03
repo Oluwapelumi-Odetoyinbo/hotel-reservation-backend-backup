@@ -86,3 +86,7 @@ export const createCustomer = async (customerData: ICustomerInput): Promise<IUse
 
   return customer;
 };
+
+export const getCustomers = async () => {
+  return UserModel.find({ role: 'customer' }).select('-password');
+};
