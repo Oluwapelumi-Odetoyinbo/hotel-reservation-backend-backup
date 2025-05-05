@@ -39,30 +39,27 @@ export const loginUser = async (
     throw new Error('Invalid credentials');
   }
 
-  // If admin login is required, ensure the role is admin or superAdmin
   if (isAdminLogin && user.role !== 'admin' && user.role !== 'superAdmin') {
     logger.error(`Unauthorized admin login attempt by: ${email}`);
     throw new Error('Unauthorized');
   }
 
-  // Check if the password is still the default
   const isDefaultPassword = await bcrypt.compare(DEFAULT_PASSWORD, user.password);
-
-  const token = generateToken({
-    id: user._id.toString(),
-    email: user.email,
-    role: user.role,
-  });
+  user.isDefaultPassword = isDefaultPassword;
 
   return {
-    user: user.toObject({ virtuals: true }),
-    token,
+    user: user.toObject({ virtuals: true }) as IUser,
+    token: generateToken({
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    }),
     isDefaultPassword,
   };
-
-
-
 };
+
+
+
 export const changePassword = async (
   userId: string,
   passwordData: IAuthChangePassword,
@@ -82,6 +79,8 @@ export const changePassword = async (
   }
 
   user.password = newPassword;
+
+  user.isDefaultPassword = false;
 
   user.isDefaultPassword = false;
   await user.save();
