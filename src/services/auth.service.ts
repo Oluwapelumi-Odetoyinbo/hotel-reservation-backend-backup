@@ -4,18 +4,19 @@ import { generateToken, verifyResetToken } from '../utils/token';
 import logger from '../utils/logger';
 import bcrypt from 'bcrypt';
 import { passwordResetTokenModel } from '../models/resetToken.model';
+
+// Define the default password constant
+const DEFAULT_PASSWORD = 'Reserve123!'; // Default password for new users
 import { generateResetToken } from '../utils/token';
 import { sendPasswordResetEmail } from './mail.service';
 
 export const loginUser = async (
   loginData: IAuthLogin,
   isAdminLogin = false,
-): Promise<{ user: IUser; token: string }> => {
+): Promise<{ user: IUser; token: string; isDefaultPassword: boolean }> => {
   const { email, password } = loginData;
 
   logger.info(`Login attempt for email: ${email}`);
-
-  // Enhanced debug logging
   logger.debug(`Input password: ${password}`);
 
   const user = await UserModel.findOne({
@@ -25,13 +26,11 @@ export const loginUser = async (
 
   if (!user) {
     logger.error(`User not found or inactive: ${email}`);
-    throw new Error('Invalid credentials');
+    throw new Error('User not found or inactive');
   }
 
-  // Add password hash to logs
-  logger.debug(`Stored password hash: ${user.password.substring(0, 15)}...`);
+  logger.debug(`Stored password hash: ${user.password?.substring(0, 15)}...`);
 
-  // Direct bcrypt comparison (bypass user method temporarily)
   const isMatch = await bcrypt.compare(password, user.password);
   logger.debug(`Bcrypt compare result: ${isMatch}`);
 
@@ -43,14 +42,16 @@ export const loginUser = async (
 
   const userObj = user.toObject({ virtuals: true }) as IUser;
 
-return {
-  user: userObj,
-  token: generateToken({
-    id: user._id.toString(),
-    email: user.email,
-    role: user.role,
-  }),
-};
+  return {
+    user: userObj,
+    token: generateToken({
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    }),
+    isDefaultPassword: user.isDefaultPassword,
+  };
+  
 
 
 };
