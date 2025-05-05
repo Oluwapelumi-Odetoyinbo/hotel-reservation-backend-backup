@@ -40,14 +40,19 @@ export const loginUser = async (
     throw new Error('Invalid credentials');
   }
 
-  return {
-    user: user.toObject({ virtuals: true }),
-    token: generateToken({
-      id: user._id.toString(),
-      email: user.email,
-      role: user.role,
-    }),
-  };
+
+  const userObj = user.toObject({ virtuals: true }) as IUser;
+
+return {
+  user: userObj,
+  token: generateToken({
+    id: user._id.toString(),
+    email: user.email,
+    role: user.role,
+  }),
+};
+
+
 };
 export const changePassword = async (
   userId: string,
@@ -68,6 +73,8 @@ export const changePassword = async (
   }
 
   user.password = newPassword;
+
+  user.isDefaultPassword = false;
   await user.save();
 
   logger.info(`Password changed successfully for user ${user.email}`);

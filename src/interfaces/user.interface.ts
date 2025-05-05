@@ -14,6 +14,7 @@ export interface IUser extends Document {
   password: string;
   role: UserRole;
   status: boolean;
+  isDefaultPassword: boolean; 
   createdAt: Date;
   updatedAt: Date;
 
