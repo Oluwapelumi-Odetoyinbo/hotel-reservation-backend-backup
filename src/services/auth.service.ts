@@ -62,14 +62,16 @@ export const loginUser = async (
 
   const userObj = user.toObject({ virtuals: true }) as IUser;
 
-return {
-  user: userObj,
-  token: generateToken({
-    id: user._id.toString(),
-    email: user.email,
-    role: user.role,
-  }),
-};
+  return {
+    user: userObj,
+    token: generateToken({
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    }),
+    isDefaultPassword: user.isDefaultPassword,
+  };
+  
 
 
 };
